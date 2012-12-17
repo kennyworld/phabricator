@@ -21,10 +21,10 @@ final class ManiphestTaskPriority extends ManiphestConstants {
     return array(
       self::PRIORITY_UNBREAK_NOW  => 'Unbreak Now!',
       self::PRIORITY_TRIAGE       => 'Needs Triage',
-      self::PRIORITY_HIGH         => 'High',
-      self::PRIORITY_NORMAL       => 'Normal',
-      self::PRIORITY_LOW          => 'Low',
-      self::PRIORITY_WISH         => 'Wishlist',
+      self::PRIORITY_HIGH         => 'Today',
+      self::PRIORITY_NORMAL       => 'Upcoming',
+      self::PRIORITY_LOW          => 'Later',
+      self::PRIORITY_WISH         => 'UNUSED',
     );
   }
 
@@ -37,10 +37,10 @@ final class ManiphestTaskPriority extends ManiphestConstants {
     return array(
       self::PRIORITY_UNBREAK_NOW  => 'Unbreak!',
       self::PRIORITY_TRIAGE       => 'Triage',
-      self::PRIORITY_HIGH         => 'High',
-      self::PRIORITY_NORMAL       => 'Normal',
-      self::PRIORITY_LOW          => 'Low',
-      self::PRIORITY_WISH         => 'Wish',
+      self::PRIORITY_HIGH         => 'Today',
+      self::PRIORITY_NORMAL       => 'Upcoming',
+      self::PRIORITY_LOW          => 'Later',
+      self::PRIORITY_WISH         => 'UNUSED',
     );
   }
 
@@ -66,7 +66,7 @@ final class ManiphestTaskPriority extends ManiphestConstants {
    * @return  int The value of the lowest priority constant.
    */
   public static function getLowestPriority() {
-    return self::PRIORITY_WISH;
+    return self::PRIORITY_LOW;
   }
 
   /**
