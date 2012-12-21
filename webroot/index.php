@@ -24,6 +24,32 @@ try {
   PhutilErrorHandler::setErrorListener(
     array('DarkConsoleErrorLogPluginAPI', 'handleErrors'));
 
+  foreach (PhabricatorEnv::getEnvConfig('load-libraries') as $library) {
+    phutil_load_library($library);
+  }
+
+  $sentry = getenv('SENTRY_DSN');
+  if (empty($sentry) && isset($_ENV['SENTRY_DSN'])) {
+    $sentry = $_ENV['SENTRY_DSN'];
+  }
+  if (!empty($sentry)) {
+    require_once 'Raven/Autoloader.php';
+    Raven_Autoloader::register();
+
+    // Configure the client
+    $client = new Raven_Client($sentry);
+
+    // Install error handlers
+    $error_handler = new Raven_ErrorHandler($client);
+    $error_handler->registerExceptionHandler();
+    $error_handler->registerErrorHandler();
+
+    SentryLogger::setClient($client, $error_handler);
+
+    PhutilErrorHandler::setErrorListener(
+      array('SentryLogger', 'handleErrors'));
+  }
+
   $sink = new AphrontPHPHTTPSink();
 
   $response = PhabricatorSetupCheck::willProcessRequest();
