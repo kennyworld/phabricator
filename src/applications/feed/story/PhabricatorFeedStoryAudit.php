@@ -41,4 +41,15 @@ final class PhabricatorFeedStoryAudit extends PhabricatorFeedStory {
     return $view;
   }
 
+  public function renderText() {
+    $author_name = $this->getHandle($this->getAuthorPHID())->getLinkName();
+    $commit_uri = PhabricatorEnv::getURI($this->getHandle($this->getPrimaryObjectPHID())->getURI());
+
+    $action = $this->getValue('action');
+    $verb = PhabricatorAuditActionConstants::getActionPastTenseVerb($action);
+
+    $text = "{$author_name} {$verb} commit {$commit_uri}";
+
+    return $text;
+  }
 }
