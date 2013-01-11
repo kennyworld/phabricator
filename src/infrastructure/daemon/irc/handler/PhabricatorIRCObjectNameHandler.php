@@ -22,7 +22,11 @@ final class PhabricatorIRCObjectNameHandler extends PhabricatorIRCHandler {
           break;
         }
 
-        $this->handleSymbols($message);
+        if ($this->getConfig('objectname.enable_symbols', true)) {
+          $this->handleSymbols($message);
+        }
+
+        $ignore_objs = $this->getConfig('objectname.ignore', array());
 
         $message = $message->getMessageText();
         $matches = null;
@@ -43,6 +47,9 @@ final class PhabricatorIRCObjectNameHandler extends PhabricatorIRCHandler {
 
         if (preg_match_all($pattern, $message, $matches, PREG_SET_ORDER)) {
           foreach ($matches as $match) {
+            if (in_array($match[1].$match[2], $ignore_objs)) {
+                continue;
+            }
             switch ($match[1]) {
               case 'D':
                 $revision_ids[] = $match[2];
@@ -184,7 +191,7 @@ final class PhabricatorIRCObjectNameHandler extends PhabricatorIRCHandler {
           $quiet_until = idx(
             $this->recentlyMentioned[$reply_to],
             $phid,
-            0) + (60 * 10);
+            0) + (60 * $this->getConfig('objectname.sleep', 10));
 
           if (time() < $quiet_until) {
             // Remain quiet on this channel.
